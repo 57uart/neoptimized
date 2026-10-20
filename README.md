@@ -46,7 +46,7 @@ Removed Xcode (3.7 GB; Command Line Tools kept), VS Code (1.4 GB), Helium (338 M
 ## What's in place
 
 - **Window manager:** paneru, patched build at `~/.local/bin/paneru` (see below); Homebrew copy unlinked.
-- **Apps:** Safari/Search browser, Zed, Rio terminal.
+- **Apps:** Safari/Search browser, Zed, Rio terminal, [Look](https://github.com/kunkka19xx/look) launcher on ⌘Space (own SQLite index, so it works with Spotlight indexing off; `ai_enabled=false` and `animations_enabled=false` in `~/.look/config`; ~38 MB footprint).
 - **macOS UI:** window/Dock/Finder animations off, Dock effectively hidden (`autohide-delay 1000`), edge tiling off, Reduce transparency + Reduce motion on, solid `#292929` wallpaper.
 - **Spotlight:** indexing off on all volumes; [`launchagents/local.quit-spotlight.plist`](launchagents/local.quit-spotlight.plist) quits the Spotlight app 20 s after login; ⌘Space / ⌥⌘Space and the menu bar icon disabled.
 - **Santa:** silent-block rules from [`santa-rules.txt`](santa-rules.txt), applied with [`santa-rules.sh`](santa-rules.sh).

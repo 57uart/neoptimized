@@ -1,0 +1,62 @@
+# Santa silent-block SigningID rules (platform binaries). Works with SIP on.
+# Apply/remove with: sudo ./santa-rules.sh apply|remove
+# Home
+# Siri & suggestions
+platform:com.apple.siri.context.service
+platform:com.apple.assistant_service
+platform:com.apple.siriinferenced
+platform:com.apple.SiriTTSTrainingAgent
+platform:com.apple.knowledgeconstructiond
+# iPhone updater
+platform:com.apple.MobileDeviceUpdater
+# Hearing
+# Text-to-speech services and voice extensions
+platform:com.apple.speech
+platform:com.apple.speech.synthesis.SpeechSynthesisServer
+platform:com.apple.speech.SpeechDataInstallerd
+platform:com.apple.ax.KonaTTSSupport.KonaSynthesizer
+platform:com.apple.texttospeech.SiriAUSP
+platform:com.apple.speech.MacinTalkFramework.MacinTalkAUSP
+# Batch 2: spell check / text services
+# Batch 3: Apple Intelligence
+platform:com.apple.contextstored
+platform:com.apple.mlhostd
+platform:com.apple.triald.system
+# Batch 3: telemetry / diagnostics
+platform:com.apple.systemstats
+platform:com.apple.diagnosticextensionsd
+platform:com.apple.wifianalyticsd
+platform:com.apple.ecosystemanalyticsd
+platform:com.apple.osanalyticshelper
+platform:com.apple.SubmitDiagInfo
+platform:com.apple.symptomsd-diag
+# Batch 3: Apple ads
+platform:com.apple.ap.promotedcontentd
+platform:com.apple.ap.adprivacyd
+# Batch 3: prediction
+platform:com.apple.milod
+# Batch 3: misc unused (Schoolwork, News, Tips, Home energy/Thread, AppleCare nags, beta/feedback, voice banking, AX assets, Business Chat)
+platform:com.apple.studentd
+platform:com.apple.newsd
+platform:com.apple.tipsd
+platform:com.apple.homeenergyd
+platform:com.apple.homeeventsd
+platform:com.apple.threadradiod
+platform:com.apple.ndoagent
+platform:com.apple.betaenrollmentagent
+platform:com.apple.betaenrollmentd
+platform:com.apple.voicebankingd
+platform:com.apple.businessservicesd
+# Deliberately NOT blocked: clients keep calling these, so launchd retried them
+# ~6/min each and Santa used ~3.5% CPU refusing them. Cheaper to let them run.
+#   assistantd siriactionsd duetexpertd knowledge-agent parsecd parsec-fbf homed
+#   AppleSpell ContextStoreAgent modelcatalogd ospredictiond analyticsagent
+#   audioanalyticsd inputanalyticsd diagnostics_agent feedbackd modelmanagerd
+#   accessibility.heard
+#   (round 2, same reason) axassetsd assistant_cdmd generativeexperiencesd
+#   intelligencecontextd rtcreportingd siriknowledged sirittsd textunderstandingd
+#   ThreadCommissionerService triald ModelCatalogAgent
+# NEVER block analyticsd: the ASL MessageTracer shim (_asl_mt_shim_send_message)
+# sends synchronously to its com.apple.analyticsd.messagetracer endpoint while
+# holding the ASL lock, so any app that logs that way freezes (seen: System
+# Settings > Privacy & Security hung on launch).

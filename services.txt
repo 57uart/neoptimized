@@ -1,0 +1,44 @@
+# Apple launchd services to disable (domain<TAB>label; domain = system|gui|user). Requires SIP off.
+# Spotlight & indexing
+system	com.apple.metadata.mds
+system	com.apple.metadata.mds.index
+system	com.apple.metadata.mds.scan
+gui	com.apple.Spotlight
+gui	com.apple.corespotlightd
+gui	com.apple.corespotlightservice
+gui	com.apple.managedcorespotlightd
+gui	com.apple.spotlightknowledged
+gui	com.apple.spotlightknowledged.importer
+gui	com.apple.spotlightknowledged.updater
+# Siri & suggestions
+gui	com.apple.Siri.agent
+gui	com.apple.assistantd
+gui	com.apple.assistant_service
+gui	com.apple.assistant_cdmd
+user	com.apple.siri.context.service
+gui	com.apple.siriactionsd
+gui	com.apple.siriinferenced
+gui	com.apple.siriknowledged
+gui	com.apple.sirittsd
+gui	com.apple.SiriTTSTrainingAgent
+gui	com.apple.suggestd
+gui	com.apple.duetexpertd
+gui	com.apple.knowledge-agent
+gui	com.apple.knowledgeconstructiond
+gui	com.apple.parsecd
+gui	com.apple.parsec-fbf
+# Home
+gui	com.apple.homed
+# iPhone updater
+gui	com.apple.mobiledeviceupdater
+# Hearing
+gui	com.apple.accessibility.heard
+# Text-to-speech (the Kona/MacinTalk/Siri voice extensions are spawned by these)
+user	com.apple.speech.speechsynthesisd.arm64
+user	com.apple.speech.speechsynthesisd.x86_64
+gui	com.apple.speech.synthesisserver
+gui	com.apple.speech.speechdatainstallerd
+# Widgets
+gui	com.apple.chronod
+# Spell check / text services
+gui	com.apple.applespell

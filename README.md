@@ -6,6 +6,14 @@ Notes and tooling from cutting resource use on a MacBook Neo (A18 Pro, 8 GB RAM,
 
 Swapped heavy apps for lighter ones, stripped macOS animations and background features, turned off Spotlight indexing, used Santa to block unused Apple services with SIP still on, and patched paneru's idle CPU use.
 
+- Zen → Safari / Search browser
+- VS Code → Zed
+- Terminal.app → Rio
+- Spotlight → Look
+- Spaces / Mission Control → paneru
+- BetterDisplay → display override plist
+- Xcode → Command Line Tools
+
 ## Results
 
 ### RAM saved per change

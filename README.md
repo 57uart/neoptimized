@@ -22,13 +22,13 @@ The workloads differed (Zen was open at the start; Codex and Claude Code at the 
 | Spotlight indexing off (`mdutil -a -i off`) | ~630 MB | RSS of `mds_stores` + `mdworker_shared` |
 | VS Code → Zed | ~300 MB | VS Code RSS |
 | Spotlight app quit at login | 146 MB | `footprint` |
-| Santa blocks (36 services) | ~250–300 MB RSS | per-service measurements, minus Santa's own ~52 MB |
+| Santa blocks (35 services) | ~250–300 MB RSS | per-service measurements, minus Santa's own ~52 MB |
 | Desktop widgets removed | ~56 MB | Weather, Photos, Calendar extensions |
 | BetterDisplay removed | 66 MB | RSS (HiDPI kept via the display override plist) |
 | Misc (GrandPerspective, leftovers) | ~50–150 MB | RSS |
 | **Total** | **~2.5–3 GB** | about a third of 8 GB |
 
-Blocking `contextstored` matters less for its current size (~11 MB) than for its known Tahoe memory leak (reports of 30 GB+).
+`contextstored` (known Tahoe memory leak) had to be unblocked; keep an eye on its memory instead.
 
 ### CPU
 
@@ -68,11 +68,12 @@ SIP makes launchd drop disable overrides for Apple services at every boot ("Igno
 ### What works with SIP on: Santa (Endpoint Security)
 [Santa](https://github.com/northpolesec/santa) refuses `exec` of blocked platform binaries (`platform:<signing id>` rules), so the service never starts. Trade-offs we measured:
 
-- **Retries cost CPU.** If something keeps calling a blocked service, launchd retries it (about every 10 s, sometimes every second), and Santa does real work refusing each attempt. With 64 rules that was ~3.5% Santa + ~1% launchd. Unblocking every service retried more than 1.5×/min, and repeating until stable (unblocking a caller can wake its dependencies; it took 3 rounds), brought it down to **0.5% + 0.2%** with 36 rules.
+- **Retries cost CPU.** If something keeps calling a blocked service, launchd retries it (about every 10 s, sometimes every second), and Santa does real work refusing each attempt. With 64 rules that was ~3.5% Santa + ~1% launchd. Unblocking every service retried more than 1.5×/min, and repeating until stable (unblocking a caller can wake its dependencies; it took 3 rounds), brought it down to **0.5% + 0.2%** (36 rules; now 35 after unblocking `contextstored`).
 - **So Santa only pays off for leaf services that nothing calls.** The Siri / Apple Intelligence group is too interconnected to block piecemeal.
 - **Synchronous callers hang.** Blocking a service that something waits on freezes the caller:
   - `AppleSpell`: every spell-check request takes a ~1 s timeout.
   - `analyticsd`: **must never be blocked.** The ASL MessageTracer shim sends to `com.apple.analyticsd.messagetracer` synchronously while holding the logging lock, which froze System Settings → Privacy & Security.
+  - `contextstored`: **must never be blocked.** `apsd` (push service) calls CoreDuet context synchronously on its main thread, so it hung; Messages then hung waiting on `apsd`, and paneru's 250 ms accessibility calls to Messages on every click froze the cursor (paneru's mouse tap shares its main thread). Hangs can cascade a long way from the blocked service.
 - The full list of deliberately unblocked services and the reasons is at the bottom of `santa-rules.txt`.
 
 Undo all Santa rules: `sudo ./santa-rules.sh remove` (or `sudo santactl rule --clean`).

@@ -19,7 +19,6 @@ platform:com.apple.texttospeech.SiriAUSP
 platform:com.apple.speech.MacinTalkFramework.MacinTalkAUSP
 # Batch 2: spell check / text services
 # Batch 3: Apple Intelligence
-platform:com.apple.contextstored
 platform:com.apple.mlhostd
 platform:com.apple.triald.system
 # Batch 3: telemetry / diagnostics
@@ -60,3 +59,8 @@ platform:com.apple.businessservicesd
 # sends synchronously to its com.apple.analyticsd.messagetracer endpoint while
 # holding the ASL lock, so any app that logs that way freezes (seen: System
 # Settings > Privacy & Security hung on launch).
+# NEVER block contextstored: apsd's main thread calls CoreDuet context
+# synchronously (_CDClientContext objectForContextualKeyPath:synchronous:),
+# so apsd hung -> Messages hung on +[APSConnection serverTimeInNanoSeconds]
+# -> paneru's accessibility calls to Messages timed out (250 ms each) on every
+# click -> cursor froze, since paneru's mouse tap runs on the same thread.

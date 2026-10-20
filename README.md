@@ -2,17 +2,11 @@
 
 Notes and tooling from cutting resource use on a MacBook Neo (A18 Pro, 8 GB RAM, macOS 26.5) on 2026-10-20. The aim was the smallest practical CPU/RAM footprint **with SIP left on**.
 
+## What we did
+
+Swapped heavy apps for lighter ones, stripped macOS animations and background features, turned off Spotlight indexing, used Santa to block unused Apple services with SIP still on, and patched paneru's idle CPU use.
+
 ## Results
-
-### System-wide, start of session vs end
-
-| | Start | End |
-|---|---|---|
-| Swap used | 5.4 GB of 6 GB | 0.37 GB |
-| Free memory (`memory_pressure`) | 26% | 55% |
-| Compressed memory | ~16 GB held in 2.9 GB | 4.8 GB held in 1.6 GB |
-
-The workloads differed (Zen was open at the start; Codex and Claude Code at the end), so treat this as the overall direction. The per-change figures below were measured at the time of each change and are more reliable.
 
 ### RAM saved per change
 

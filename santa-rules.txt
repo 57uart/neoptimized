@@ -26,7 +26,6 @@ platform:com.apple.systemstats
 platform:com.apple.diagnosticextensionsd
 platform:com.apple.wifianalyticsd
 platform:com.apple.ecosystemanalyticsd
-platform:com.apple.osanalyticshelper
 platform:com.apple.SubmitDiagInfo
 platform:com.apple.symptomsd-diag
 # Batch 3: Apple ads
@@ -64,3 +63,10 @@ platform:com.apple.businessservicesd
 # so apsd hung -> Messages hung on +[APSConnection serverTimeInNanoSeconds]
 # -> paneru's accessibility calls to Messages timed out (250 ms each) on every
 # click -> cursor froze, since paneru's mouse tap runs on the same thread.
+# NEVER block osanalyticshelper: transparencyd calls it synchronously
+# (+[OSADefaults sendOperation:forKey:withBlock:] -> com.apple.osanalytics.
+# osanalyticshelper) from +[TransparencySettings automatedDeviceGroup]. Blocked,
+# identityservicesd -> callservicesd -> Messages' menu-bar rebuild
+# (CKMenuBarManager menuPhoneCall -> TUCallCapabilities) hung Messages for 158 s
+# and it could not be force-quit. Seen in /Library/Logs/DiagnosticReports/
+# Messages_*.hang; launchd was also respawning the helper every 10 s.

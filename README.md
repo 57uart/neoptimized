@@ -76,6 +76,7 @@ SIP makes launchd drop disable overrides for Apple services at every boot ("Igno
   - `AppleSpell`: every spell-check request takes a ~1 s timeout.
   - `analyticsd`: **must never be blocked.** The ASL MessageTracer shim sends to `com.apple.analyticsd.messagetracer` synchronously while holding the logging lock, which froze System Settings → Privacy & Security.
   - `contextstored`: **must never be blocked.** `apsd` (push service) calls CoreDuet context synchronously on its main thread, so it hung; Messages then hung waiting on `apsd`, and paneru's 250 ms accessibility calls to Messages on every click froze the cursor (paneru's mouse tap shares its main thread). Hangs can cascade a long way from the blocked service.
+  - `osanalyticshelper`: **must never be blocked.** `transparencyd` (part of iMessage key transparency) queries it synchronously, so blocking it stalled `identityservicesd` → `callservicesd` → Messages' main thread while it rebuilt its menu bar (`TUCallCapabilities`). Messages hung for 158 s and could not be force-quit. Found by reading the `.hang` report in `/Library/Logs/DiagnosticReports/`, which follows the wait chain across processes. 34 rules now.
 - The full list of deliberately unblocked services and the reasons is at the bottom of `santa-rules.txt`.
 
 Undo all Santa rules: `sudo ./santa-rules.sh remove` (or `sudo santactl rule --clean`).
